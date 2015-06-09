@@ -81,21 +81,26 @@ function cifrar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     N = double(get(handles.mensaje,'String'));
     if length(N) < 16
-        for i=length(N) + 1: 16
-            N(i) = 0;
+        
+        if length(N) < 16
+            for i=length(N) + 1: 16
+                N(i) = 0;
+            end
         end
+        [s_box, inv_s_box, w, poly_mat, inv_poly_mat] = aes_init;
+        cyphertext = cipher(N', w, s_box, poly_mat, 1);
+        cyphertext;
+        salida1 = [char(cyphertext)];
+
+        re_plaintext = inv_cipher (cyphertext, w, inv_s_box, inv_poly_mat, 1);
+        re_plaintext;
+        salida2 = [char(re_plaintext)];
+
+        set(handles.encriptado, 'String', salida1);
+        set(handles.desencriptado, 'String', salida2);
+    else
+        msgbox('El mensaje debe tener 16 carácteres o menos','Error');
     end
-    [s_box, inv_s_box, w, poly_mat, inv_poly_mat] = aes_init;
-    cyphertext = cipher(N', w, s_box, poly_mat, 1);
-    cyphertext;
-    salida1 = [char(cyphertext)];
-    
-    re_plaintext = inv_cipher (cyphertext, w, inv_s_box, inv_poly_mat, 1);
-    re_plaintext;
-    salida2 = [char(re_plaintext)];
-    
-    set(handles.encriptado, 'String', salida1);
-    set(handles.desencriptado, 'String', salida2);
 
 
 
